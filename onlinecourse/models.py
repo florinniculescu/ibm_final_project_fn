@@ -51,6 +51,18 @@ class Learner(models.Model):
         return self.user.username + "," + \
                self.occupation
 
+# Choice model
+class Choice(models.Model):
+    c_question = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    c_text = models.TextField()
+    is_right = models.BooleanField(default=False)
+
+# Question model
+class Question(models.Model):
+    q_course = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    q_text = models.TextField()
+    q_grade = models.IntegerField(default=1)
+    q_choices = models.ManyToManyField(Choice)
 
 # Course model
 class Course(models.Model):
@@ -60,6 +72,7 @@ class Course(models.Model):
     pub_date = models.DateField(null=True)
     instructors = models.ManyToManyField(Instructor)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Enrollment')
+    questions = models.ManyToManyField(Question)
     total_enrollment = models.IntegerField(default=0)
     is_enrolled = False
 
