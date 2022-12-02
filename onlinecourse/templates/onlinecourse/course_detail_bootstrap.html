@@ -60,7 +60,16 @@
                 {% for question in course.question_set.all %}
                 <div class="card mt-1">
                     <div class="card-header"><h4>Question: {{question.q_text}}</h4></div>
-                    <!--<div class="card-body">{{lesson.content}}</div> -->
+                    {% for choice in question.choice_set.all %}
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                     <input type="checkbox" name="choice_{{choice.id}}" id="{{choice.id}}" aria-label="Select if you consider it right">
+                                </div>
+                            <div class="card-body">{{choice.c_text}}</div>
+                            </div>
+                        </div>
+                    {% endfor%}
                 </div>
                 {% endfor %}
             </div>
@@ -68,26 +77,26 @@
             
 
             {% endif %}
-            <!-- <HINT> If user is authenticated, show course exam with a list of question -->
+            <!-- OK <HINT> If user is authenticated, show course exam with a list of question -->
 
-            <!-- <HINT> Each example will have many questions -->
+            <!-- OK <HINT> Each example will have many questions -->
 
-            <!-- <HINT> Each question will have many choices -->
+            <!-- OK <HINT> Each question will have many choices -->
 
 
             <!-- <HINT> Create a form to collect the selected choices for all questions -->
-            <!-- <HINT> For each question choice, you may create a checkbox input like
-            <input type="check" name="choice_{{choice.id}}" id="{{choice.id}}" ...>
+            <!-- OK <HINT> For each question choice, you may create a checkbox input like
+            OK <input type="check" name="choice_{{choice.id}}" id="{{choice.id}}" ...>
             -->
 
-            <!-- A choice submission form example
+            <!--to change-->
             <form id="questionform" action="point to a submit view" method="post">
-                        ... for each question in the course ...
+                        <!--... for each question in the course ...-->
                         <div class="card mt-1">
                             <div class="card-header"><h5>{{ question.question_text}}</h5></div>
                             {% csrf_token %}
                             <div class="form-group">
-                               ... for each choice in the question ...
+                               <!--... for each choice in the question ...-->
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input type="checkbox" name="choice_{{choice.id}}"
@@ -98,7 +107,7 @@
                             </div>
                         </div>
                     <input class="btn btn-success btn-block" type="submit" value="Submit">
-            </form> -->
+            </form>
 
             <!--Check here to see more details Bootstrap checkbox
              https://www.w3schools.com/bootstrap4/bootstrap_forms_inputs.asp-->
