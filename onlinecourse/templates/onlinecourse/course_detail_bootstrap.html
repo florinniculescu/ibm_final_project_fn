@@ -53,25 +53,35 @@
             
             {% if user.is_authenticated %}
             <!-- Task: show questions and choices -->
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#exam" aria-expanded="false" aria-controls="exam">
+            <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#exam" aria-expanded="false" aria-controls="exam">
                 Start Exam
               </button>
             <div id="exam" class="collapse">
-                {% for question in course.question_set.all %}
-                <div class="card mt-1">
-                    <div class="card-header"><h4>Question: {{question.q_text}}</h4></div>
-                    {% for choice in question.choice_set.all %}
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                     <input type="checkbox" name="choice_{{choice.id}}" id="{{choice.id}}" aria-label="Select if you consider it right">
-                                </div>
-                            <div class="card-body">{{choice.c_text}}</div>
+                <form id="questionform" action="point to a submit view" method="post">
+                    {% for question in course.question_set.all %}
+                    <div class="card mt-1">
+                        <div class="card-header"><h4>Question: {{question.q_text}}</h4></div>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    {% for choice in question.choice_set.all %}
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <input type="checkbox" name="choice_{{choice.id}}" id="{{choice.id}}" aria-label="Select if you consider it right">
+                                                        </div>
+                                                        <div class="card-body">{{choice.c_text}}</div>
+                                                    </div>
+                                                </div>      
+                                    {% endfor%}
+                                </label>
                             </div>
-                        </div>
-                    {% endfor%}
-                </div>
-                {% endfor %}
+                        </div>  
+                    </div>
+                    {% endfor %}
+                    <input class="btn btn-success btn-block" type="submit" value="Submit">
+                </form>
             </div>
 
             
@@ -90,24 +100,17 @@
             -->
 
             <!--to change-->
-            <form id="questionform" action="point to a submit view" method="post">
+            
                         <!--... for each question in the course ...-->
-                        <div class="card mt-1">
-                            <div class="card-header"><h5>{{ question.question_text}}</h5></div>
-                            {% csrf_token %}
-                            <div class="form-group">
-                               <!--... for each choice in the question ...-->
-                                <div class="form-check">
-                                    <label class="form-check-label">
+                       
+                           <!-- 
                                         <input type="checkbox" name="choice_{{choice.id}}"
                                                class="form-check-input" id="{{choice.id}}"
                                                value="{{choice.id}}">{{ choice.choice_text }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    <input class="btn btn-success btn-block" type="submit" value="Submit">
-            </form>
+                                    -->
+                        
+                    
+         
 
             <!--Check here to see more details Bootstrap checkbox
              https://www.w3schools.com/bootstrap4/bootstrap_forms_inputs.asp-->
