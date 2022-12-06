@@ -108,17 +108,22 @@ def enroll(request, course_id):
          # OK Get user and course object, then get the associated enrollment object created when the user enrolled the course
          # OK Create a submission object referring to the enrollment
          # OK Collect the selected choices from exam form
-         # Add each selected choice object to the submission object
+         # OK Add each selected choice object to the submission object
          # OK Redirect to show_exam_result with the submission id
 def submit(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     user = request.user
 
     enrollment_obj = Enrollment.objects.get(user=user, course=course, mode='honor')
-    Submission.objects.create(enrollment=enrollment_obj)
+    submit_obj = Submission.objects.create(enrollment=enrollment_obj)
     answers = extract_answers(request)
+    for i in answers:
+        submit_obj.choices.choice_id = i
+    
+    submit_obj.save()
 
-    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(submission.id,)))
+
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(submit_obj.id,)))
 
 def extract_answers(request):
     submitted_anwsers = []
@@ -132,11 +137,25 @@ def extract_answers(request):
 
 # <HINT> Create an exam result view to check if learner passed exam and show their question results and result for each question,
 # you may implement it based on the following logic:
-        # Get course and submission based on their ids
-        # Get the selected choice ids from the submission record
-        # For each selected choice, check if it is a correct answer or not
-        # Calculate the total score
-#def show_exam_result(request, course_id, submission_id):
+        # OK Get course and submission based on their ids
+        # OK Get the selected choice ids from the submission record
+        # OK For each selected choice, check if it is a correct answer or not
+        # OK Calculate the total score
+def show_exam_result(request, course_id, submission_id):
+    course = get_object_or_404(Course, pk=course_id)
+    submission = get_object_or_404(Submission, pk=submission_id)
+    score = 0
+    choice_ids = submission.choice_set.all
+    for question in course.question_set.all:
+        standard_answers = question.choice_set.all
+        if standard_answers.is_get_score(standard_answers,choice_ids) is True:
+            score = score + question.q_grade
+        else:
+            score = score
+
+                
+                
+
 
 
 
