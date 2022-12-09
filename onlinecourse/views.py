@@ -114,23 +114,28 @@ def submit(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     user = request.user
 
-    enrollment_obj = Enrollment.objects.get(user=user, course=course, mode='honor')
+    enrollment_obj = Enrollment.objects.get(user=user, course=course)
     submit_obj = Submission.objects.create(enrollment=enrollment_obj)
     answers = extract_answers(request)
+    question = Question.objects.get(q_course=course)
+    choice_obj = Choice.objects.get(c_question=question)
+    # in extract answers i already points to the right choice
     for i in answers:
-        submit_obj.choices.choice_id = i
+        # get the selected choice
+        # add it 
+        submit_obj.choices.add(choice_obj[i])
     
     submit_obj.save()
 
 
-    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(submit_obj.id,)))
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(course.id,submit_obj.id)))
 
 def extract_answers(request):
     submitted_anwsers = []
     for key in request.POST:
         if key.startswith('choice'):
             value = request.POST[key]
-            choice_id = int(value)
+            choice_id = key.rfind("_") + 1 #int(value)
             submitted_anwsers.append(choice_id)
     return submitted_anwsers
 
@@ -145,7 +150,7 @@ def show_exam_result(request, course_id, submission_id):
     course = get_object_or_404(Course, pk=course_id)
     submission = get_object_or_404(Submission, pk=submission_id)
     score = 0
-    choice_ids = submission.choice_set.all
+    choice_ids = submission.choices_set.all
     for question in course.question_set.all:
         standard_answers = question.choice_set.all
         if standard_answers.is_get_score(standard_answers,choice_ids) is True:

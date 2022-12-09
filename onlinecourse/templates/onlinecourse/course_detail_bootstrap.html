@@ -57,7 +57,7 @@
                 Start Exam
               </button>
             <div id="exam" class="collapse">
-                <form id="questionform" action="point to a submit view" method="post">
+                <form id="questionform" action="submit/" method="post">
                     {% for question in course.question_set.all %}
                     <div class="card mt-1">
                         <div class="card-header"><h4>Question: {{question.q_text}}</h4></div>
@@ -80,7 +80,7 @@
                         </div>  
                     </div>
                     {% endfor %}
-                    <input class="btn btn-success btn-block" type="submit" value="Submit">
+                    <input class="btn btn-success btn-block" type="submit" value="submit">
                 </form>
             </div>
 
