@@ -150,17 +150,21 @@ def extract_answers(request):
         # OK For each selected choice, check if it is a correct answer or not
         # OK Calculate the total score
 def show_exam_result(request, course_id, submission_id):
+    context = {}
     course = get_object_or_404(Course, pk=course_id)
     submission = get_object_or_404(Submission, pk=submission_id)
     score = 0
+    total_score = 0
     choice_ids = submission.choices.all()
     for question in course.question_set.all():
+        total_score = total_score + question.q_grade
         standard_answers = question.choice_set.all()
-        if Choice.is_get_score(standard_answers,choice_ids) is True:
+        if Choice.is_get_score(question,choice_ids) is True:
             score = score + question.q_grade
         else:
             score = score
-    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
+    context ['grade'] = ( score / total_score ) * 100
+    return render(request, 'onlinecourse/exam_result_bootstrap.html',context)
                 
                 
 
