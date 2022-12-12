@@ -164,6 +164,7 @@ def show_exam_result(request, course_id, submission_id):
         else:
             score = score
     context ['grade'] = ( score / total_score ) * 100
+    context ['course'] = course
     return render(request, 'onlinecourse/exam_result_bootstrap.html',context)
                 
                 
