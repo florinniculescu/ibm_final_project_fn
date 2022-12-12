@@ -113,12 +113,10 @@ def enroll(request, course_id):
 def submit(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     user = request.user
-
     enrollment_obj = Enrollment.objects.get(user=user, course=course)
     submit_obj = Submission.objects.create(enrollment=enrollment_obj)
     answers = extract_answers(request)
-    question = Question.objects.get(q_course=course)
-    
+
     # in extract answers i already points to the right choice
     for i in answers:
         # get the selected choice
@@ -155,17 +153,14 @@ def show_exam_result(request, course_id, submission_id):
     submission = get_object_or_404(Submission, pk=submission_id)
     score = 0
     total_score = 0
-    r_question_headers = []
     choice_ids = submission.choices.all()
     for question in course.question_set.all():
         total_score = total_score + question.q_grade
-        #standard_answers = question.choice_set.all()
-        r_question_headers.append(question)
         if Choice.is_get_score(question,choice_ids) is True:
             score = score + question.q_grade
         else:
             score = score
-    context ['grade'] = ( score / total_score ) * 100
+    context ['grade'] = int(( score / total_score ) * 100)
     context ['course'] = course
     context ['selected_ids'] = choice_ids
     return render(request, 'onlinecourse/exam_result_bootstrap.html',context)
