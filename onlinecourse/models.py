@@ -108,6 +108,9 @@ class Choice(models.Model):
 
     def is_get_score(self, selected_ids):
         all_answers = self.choice_set.filter(is_right=True).count()
+        # code below presumes that a right selection prevails for the value of truth of an answer ... it was provided with this logic
+        # e.g. if the number of true choices for a question is smaller than the selection made, and selection made includes all true choices but is not limited to them
+        # additionally for the below statement a check between the number of selected_ids and selected_correct can be performed, if these are no equal then the answer is false
         selected_correct = self.choice_set.filter(is_right=True, id__in=selected_ids).count()
         if all_answers == selected_correct:
             return True
