@@ -110,10 +110,15 @@ class Choice(models.Model):
         all_answers = self.choice_set.filter(is_right=True).count()
         # code below presumes that a right selection prevails for the value of truth of an answer ... it was provided with this logic
         # e.g. if the number of true choices for a question is smaller than the selection made, and selection made includes all true choices but is not limited to them
-        # additionally for the below statement a check between the number of selected_ids and selected_correct can be performed, if these are no equal then the answer is false
+        # additionally for the below statement a check between the number of selected_ids for the question and selected_correct can be performed, if these are no equal then the answer is false
         selected_correct = self.choice_set.filter(is_right=True, id__in=selected_ids).count()
+        nr_selections_for_q = self.choice_set.filter(id__in=selected_ids).count()
         if all_answers == selected_correct:
-            return True
+            # exclusive value of truth for one question, all choices should be correctly selected for the anser to be true
+            if selected_correct == nr_selections_for_q:
+                return True
+            else:
+                return False
         else:
             return False
 
